@@ -28,7 +28,7 @@ private async checkLogin(user_id:string){
         return false
       }
 }
-  async GetAllBlogs(user_id) {
+  async GetAllBlogs(user_id:string) {
     if(!await this.checkLogin(user_id))return "Invalid/Expired Token"
     return await this.blog.find().lean().exec();
   }

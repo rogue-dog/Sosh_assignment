@@ -103,4 +103,14 @@ describe('BlogController', () => {
   afterAll(async()=>{
    await app.close()
   })
+
+  //Tests for Other API Endpoints
+  describe("Fetching All Blogs to LoggedIn Users",()=>{
+    it("API should return an array with all the blogs",async()=>{
+      const res = await blogController.getAllBlogs({user_id:LoggedInUser.id});
+      expect(res).toBeInstanceOf(Array);
+    });
+  })
+
+  
 });
