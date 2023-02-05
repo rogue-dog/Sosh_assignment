@@ -3,13 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserLogIn, UserSignUp } from './users.dto';
 import { User, UserDocument } from './users.schema';
-import { JWT } from 'src/helper_functions/JWT';
+import { JWT } from '../helper_functions/JWT';
 @Injectable()
 export class UserService{
     constructor(@InjectModel(User.name) private readonly user:Model<UserDocument>){};
 
     async SignUp(details : UserSignUp){
-       const token =  JWT.createJwt()
+       const token =  JWT.createJwt(); //Gives a Session Token to the User
         var user_details = {...details,token};
        const doc=await this.user.findOne({email:user_details.email});
        if(doc)return {status:402,msg:"User with this email already exists"}; 

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 
-import { JWT } from 'src/helper_functions/JWT';
-import { User, UserDocument } from 'src/users/users.schema';
+import { JWT } from '../helper_functions/JWT';
+import { User, UserDocument } from '../users/users.schema';
 import { newBlog, upDatedBlog } from './blog.dto';
 import { Blog, BlogDocument } from './blog.schema';
 @Injectable()
@@ -11,6 +11,7 @@ export class BlogService {
   constructor(
     @InjectModel(Blog.name) private readonly blog: Model<BlogDocument>, @InjectModel(User.name) private readonly user:Model<UserDocument>
   ) {}
+  //Checks if the user is loggedIn or not
 private async checkLogin(user_id:string){
   try{
     const res = await this.user
@@ -24,7 +25,6 @@ private async checkLogin(user_id:string){
     return true;
   }
     catch{
-      console.log("error")
         return false
       }
 }
@@ -34,7 +34,6 @@ private async checkLogin(user_id:string){
   }
   async createBlog(details:newBlog){
     var r =await  this.checkLogin(details.createdBy);
-    console.log("r",r);
 if (!r) return 'Invalid/Expired Token';
 const date = new Date();
 var new_details={...details,createdOn:date}
@@ -51,7 +50,8 @@ return{msg:"Blog Created Successfully",blog_details:doc}
     return doc
   }
   async DeleteBlog(blog_id:string,user_id:string){
-        if (!await this.checkLogin(user_id)) return 'Invalid/Expired Token';
+        if (! await this.checkLogin(user_id)) return 'Invalid/Expired Token';
+        
         const result = await this.blog
           .findById(blog_id, { createdBy: 1 })
           .lean()
